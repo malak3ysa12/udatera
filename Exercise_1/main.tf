@@ -10,7 +10,9 @@ resource "aws_instance" "web-server-instance" {
 
   count = 4
 
-  ami               = var.AMI_ID
+  ami               = ami-00874d747dde814fa
+  subnet_id         = subnet-0028e2904543048cc
+  vpc_id            = vpc-038aa9684d3a97d7b
   instance_type     = "t2.micro"
   availability_zone = "us-east-1b"
   key_name          = "udaterform	"
