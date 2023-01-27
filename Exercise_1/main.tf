@@ -4,7 +4,37 @@ provider "aws" {
   access_key = "my-access-key"
   secret_key = "my-secret-key"
 }
+provider "aws" {
+  region = "us-east-1"
+}
 
+resource "aws_s3_bucket" "terraform_state" {
+  bucket = "tfstate"
+     
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_s3_bucket_versioning" "terraform_state" {
+    bucket = aws_s3_bucket.terraform_state.id
+
+    versioning_configuration {
+      status = "Enabled"
+    }
+}
+
+resource "aws_dynamodb_table" "terraform_state_lock" {
+  name           = "app-state"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+}
 # TODO: provision 4 AWS t2.micro EC2 instances named Udacity T2
 resource "aws_instance" "web-server-instance" {
 
